@@ -237,13 +237,17 @@ SQL;
         });
 
         $app->post('/x', function ($req, $res) use ($pdo) {
-            $params = $this->getPostParams($req);
+            $p = $this->getPostParams($req);
 
-            if ($params['a'] === 'l') {
-                return $this->response($res, ['result' => $this->list($pdo, $params['t'])], 200);
-            } else {
-                return $this->response($res, null, 400);
+            if ($p['a'] === 'l') {
+                return $this->response($res, ['result' => $this->list($pdo, $p['t'])], 200);
             }
+
+            if ($p['a'] === 'r') {
+                return $this->response($res, ['result' => $this->read($pdo, $p['t'], $p['v']['id'])], 200);
+            }
+
+            return $this->response($res, null, 400);
         });
 
         $app->run();
@@ -269,9 +273,18 @@ SQL;
         $sql = 'SELECT * FROM ' . $t;
         $query = $pdo->prepare($sql);
         if (!$query->execute()) {
-            throw new PDOException('При получении пользователей возникла ошибка');
+            throw new PDOException('Ошибка');
         }
         return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function read(PDO $pdo, $t, $id) {
+        $sql = 'SELECT * FROM ' . $t . ' WHERE id = ' . $id;
+        $query = $pdo->prepare($sql);
+        if (!$query->execute()) {
+            throw new PDOException('Ошибка');
+        }
+        return $query->fetch(PDO::FETCH_ASSOC);
     }
 
 }
