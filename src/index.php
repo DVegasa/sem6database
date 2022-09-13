@@ -236,6 +236,10 @@ SQL;
             return $this->response($res, ['result' => $result], 200);
         });
 
+        $app->post('/rest/tables', function ($req, $res) use ($pdo) {
+            return $this->response($res, ['result' => self::TABLES], 200);
+        });
+
         $app->post('/rest/x', function ($req, $res) use ($pdo) {
             $p = $this->getPostParams($req);
 
