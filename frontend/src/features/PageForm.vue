@@ -31,7 +31,7 @@
             </template>
 
             <template v-if="table[column] === 'date'">
-              <el-date-picker v-model="form[column]"></el-date-picker>
+              <el-date-picker v-model="form[column]" value-format="YYYY-MM-DD"></el-date-picker>
             </template>
 
           </el-form-item>
