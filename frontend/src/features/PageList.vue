@@ -1,13 +1,20 @@
 <template>
   <div class="pageList">
-    {{table}}
-    <br />
-    {{entities}}
+    <div class="table">
+      <el-table :data="tableData">
+        <el-table-column
+          v-for="col in columns"
+          :prop="col"
+          :label="col"
+        />
+      </el-table>
+    </div>
   </div>
 </template>
 
+
 <script setup>
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {useRoute} from "vue-router"
 import {useStore} from "@/features/useStore.js";
 
@@ -21,7 +28,17 @@ watch([route, store.data, store.tables], ([route]) => {
   table.value = store.tables.value[route.query['t']]
 }, {immediate: true})
 
+const tableData = computed(() => {
+  return entities.value
+})
+
+const columns = computed(() => {
+  if (!table.value) return []
+  return Object.keys(table.value)
+})
+
 </script>
+
 
 <style lang="scss" scoped>
 @import "@/styles";

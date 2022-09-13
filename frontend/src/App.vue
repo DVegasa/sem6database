@@ -27,7 +27,6 @@ head, body {
 .header {
   display: flex;
   align-content: center;
-  gap: 10px;
   padding-left: 10px;
   padding-right: 10px;
   border-bottom: 1px solid #a7a7a7;
