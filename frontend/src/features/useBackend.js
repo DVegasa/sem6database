@@ -1,5 +1,6 @@
 import {ref, watch} from "vue";
 import axios from "axios";
+import {useNotification} from "@/features/useNotification.js";
 
 export const BackendErrorCodes = {
   REQUEST_FAILED: {
@@ -44,7 +45,10 @@ export const useBackend = (options = {
   const api = async (endpoint, payload, config) => {
     try {
       loading.value = true
-      config = merge({ data: payload }, config)
+      config = {
+        data: payload,
+        ...config,
+      }
       return await client(endpoint, config)
     } catch {
       // повторная попытка, если сессия устарела

@@ -196,7 +196,7 @@ SQL;
 
         $app = AppFactory::create();
 
-        $app->any('/ping', function(Request $req, Response $r) {
+        $app->any('/rest/ping', function(Request $req, Response $r) {
             return $this->response($r, [
                     'get' => $this->getGetParams($req),
                     'post' => $this->getPostParams($req),
@@ -204,28 +204,28 @@ SQL;
         });
 
 
-        $app->post('/initdb', function(Request $req, Response $res) use ($pdo) {
+        $app->post('/rest/initdb', function(Request $req, Response $res) use ($pdo) {
             $params = $this->getPostParams($req);
             if ($params['p'] !== $_ENV['ADMIN_PASSWORD']) return $this->response($res, [], 403);
             $pdo->exec(self::SQL_INIT);
             return $this->response($res, [], 200);
         });
 
-        $app->post('/fakedata', function(Request $req, Response $res) use ($pdo) {
+        $app->post('/rest/fakedata', function(Request $req, Response $res) use ($pdo) {
             $params = $this->getPostParams($req);
             if ($params['p'] !== $_ENV['ADMIN_PASSWORD']) return $this->response($res, [], 403);
             $pdo->exec(self::SQL_FAKE_DATA);
             return $this->response($res, [], 200);
         });
 
-        $app->post('/exec', function ($req, $res) use ($pdo) {
+        $app->post('/rest/exec', function ($req, $res) use ($pdo) {
             $params = $this->getPostParams($req);
             if ($params['p'] !== $_ENV['ADMIN_PASSWORD']) return $this->response($res, [], 403);
             $result = $pdo->exec($params['s']);
             return $this->response($res, ['result' => $result], 200);
         });
 
-        $app->post('/query', function ($req, $res) use ($pdo) {
+        $app->post('/rest/query', function ($req, $res) use ($pdo) {
             $params = $this->getPostParams($req);
             if ($params['p'] !== $_ENV['ADMIN_PASSWORD']) return $this->response($res, [], 403);
 
@@ -236,7 +236,7 @@ SQL;
             return $this->response($res, ['result' => $result], 200);
         });
 
-        $app->post('/x', function ($req, $res) use ($pdo) {
+        $app->post('/rest/x', function ($req, $res) use ($pdo) {
             $p = $this->getPostParams($req);
 
             if ($p['a'] === 'l') {
