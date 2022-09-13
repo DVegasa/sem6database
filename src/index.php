@@ -247,6 +247,10 @@ SQL;
                 return $this->response($res, ['result' => $this->read($pdo, $p['t'], $p['v']['id'])], 200);
             }
 
+            if ($p['a'] === 'd') {
+                return $this->response($res, ['result' => $this->delete($pdo, $p['t'], $p['v']['id'])], 200);
+            }
+
             return $this->response($res, null, 400);
         });
 
@@ -286,5 +290,30 @@ SQL;
         }
         return $query->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function delete(PDO $pdo, $t, $id) {
+        $sql = "DELETE FROM $t WHERE id = $id";
+        $query = $pdo->prepare($sql);
+        if (!$query->execute()) {
+            throw new PDOException('При удалении пользователя возникла ошибка');
+        }
+    }
+
+//    public function update($id, $data)
+//    {
+//        foreach ($data as $key => $value) {
+//            $data[$key] = htmlspecialchars($value, ENT_QUOTES);
+//        }
+//
+//        foreach ($data as $column => $value) {
+//            $str[] = $column . ' = \'' . $value . '\'';
+//        }
+//        $str = implode(',', $str);
+//        $sql = "UPDATE {$this->getTableName()} SET {$str} WHERE id = {$id}";
+//        $query = Database::prepare($sql);
+//        if (!$query->execute()) {
+//            throw new PDOException('При обновлении пользователя возникла ошибка');
+//        }
+//    }
 
 }
