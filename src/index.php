@@ -140,6 +140,40 @@ INSERT INTO db.shipment (id_supplier, id_mineral, date, amount) VALUES (1, 1, '2
 
 SQL;
 
+
+    public const TABLES = [
+            'mineral' => [
+                    'id' => 'int',
+                    'name' => 'string',
+            ],
+            'report' => [
+                    'id' => 'int',
+                    'id_shaft' => 'int',
+                    'year' => 'int',
+                    'amount' => 'float',
+            ],
+            'shaft' => [
+                    'id' => 'int',
+                    'name' => 'string',
+                    'id_mineral' => 'int',
+                    'city' => 'string',
+                    'id_supplier' => 'int',
+            ],
+            'shipment' => [
+                    'id' => 'int',
+                    'id_supplier' => 'int',
+                    'id_mineral' => 'int',
+                    'date' => 'date',
+                    'amount' => 'float',
+            ],
+            'supplier' => [
+                    'id' => 'int',
+                    'name' => 'string',
+                    'city' => 'string',
+                    'country' => 'string',
+            ],
+    ];
+
     function main(): void {
         Dotenv::createImmutable(dirname(__DIR__))->load();
         $pdo = new PDO(
@@ -155,7 +189,7 @@ SQL;
         // Server
 
         // t - имя таблицы
-        // a - действие ('c', 'r', 'u', 'd')
+        // a - действие ('c', 'r', 'u', 'd', 'l'); 'r' - одна запись. 'l' - все записи
         // v - ассоциативный массив поле => значение
         // p - админский пароль
         // s - сырая SQL команда
@@ -202,6 +236,16 @@ SQL;
             return $this->response($res, ['result' => $result], 200);
         });
 
+        $app->post('/x', function ($req, $res) use ($pdo) {
+            $params = $this->getPostParams($req);
+
+            if ($params['a'] === 'l') {
+                return $this->response($res, ['result' => $this->list($pdo, $params['t'])], 200);
+            } else {
+                return $this->response($res, null, 400);
+            }
+        });
+
         $app->run();
     }
 
@@ -218,6 +262,16 @@ SQL;
 
     function getGetParams(Request $req): ?array {
         return $req->getQueryParams();
+    }
+
+
+    function list(PDO $pdo, $t) {
+        $sql = 'SELECT * FROM ' . $t;
+        $query = $pdo->prepare($sql);
+        if (!$query->execute()) {
+            throw new PDOException('При получении пользователей возникла ошибка');
+        }
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
 }
