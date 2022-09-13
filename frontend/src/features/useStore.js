@@ -7,7 +7,9 @@ const tables = ref({})
 const backend = useBackend()
 
 const reload = async (tableName) => {
+  console.log('reload', tableName)
   if (tableName) {
+    data.value[tableName] = []
     const res = await backend.api('/x', {
       t: tableName,
       a: 'l',
@@ -38,10 +40,11 @@ const c = async (table, payload) => {
   await reload(table)
 }
 
-const d = async (table) => {
+const d = async (table, id) => {
   await backend.api('/x', {
     t: table,
     a: 'd',
+    v: {id},
   })
   await reload(table)
 }
@@ -65,5 +68,8 @@ export const useStore = () => {
     reload,
     data,
     tables,
+    c,
+    u,
+    d
   }
 }
