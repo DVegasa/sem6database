@@ -78,8 +78,9 @@ export const useBackend = (options = {
         if (options.showNotificationOnError) {
           useNotification().show({
             type: 'error',
-            title: e.appCode.message,
-            message: e.appCode.code,
+            // title: e.appCode.message,
+            // message: e.appCode.code,
+            title: 'Ошибка',
           })
         }
         throw e

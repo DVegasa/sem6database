@@ -1,6 +1,9 @@
 <template>
   <div class="pageForm">
 
+    <h1 v-if="isCreateMode">Создание</h1>
+    <h1 v-else>Обновление</h1>
+
     <div class="form">
       <el-form label-width="200px" @keydown.enter.prevent>
 
@@ -12,7 +15,11 @@
             </template>
 
             <template v-if="table[column] === 'int'">
-              <div v-if="column === 'id'">{{form?.[column] ?? ''}}</div>
+              <div v-if="column === 'id'">
+                <template v-if="!isCreateMode">
+                  {{form?.[column] ?? ''}}
+                </template>
+              </div>
               <el-input-number
                   v-else
                   v-model="form[column]"
@@ -31,7 +38,10 @@
         </template>
 
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">Сохранить</el-button>
+          <el-button type="primary" @click="onSubmit">
+            <template v-if="isCreateMode">Создать</template>
+            <template v-else>Обновить</template>
+          </el-button>
         </el-form-item>
 
       </el-form>
@@ -51,6 +61,10 @@ const route = useRoute()
 const store = useStore()
 
 const form = reactive({})
+
+const isCreateMode = computed(() => {
+  return !route.query?.['id']
+})
 
 
 const table = computed(() => {
@@ -80,7 +94,11 @@ watch([columns, entity], ([cols]) => {
 
 
 const onSubmit = async () => {
-  await store.u(route.query['t'], form)
+  if (isCreateMode.value) {
+    await store.c(route.query['t'], form)
+  } else {
+    await store.u(route.query['t'], form)
+  }
   useNotification().show({
     type: 'success',
     title: 'Успешно!',

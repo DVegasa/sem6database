@@ -1,6 +1,8 @@
 <template>
   <div class="pageList">
+    <el-button type="primary" style="margin-right: 30px" @click="onCreateClick">Создать</el-button>
     <el-checkbox v-model="showRawId" label="Показывать ID" />
+
     <div class="table">
       <el-table :data="tableData">
         <el-table-column
@@ -92,6 +94,15 @@ const onEdit = async (entity) => {
     query: {
       t: route.query['t'],
       id: entity.id,
+    },
+  })
+}
+
+const onCreateClick = async () => {
+  router.push({
+    path: '/form',
+    query: {
+      t: route.query['t'],
     },
   })
 }
