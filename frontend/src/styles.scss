@@ -1,0 +1,57 @@
+
+.appNotificationClass {
+
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 8px;
+
+  * {
+    font-weight: 500;
+  }
+
+  &.type-error {
+    border: 2px solid red;
+    background-color: scale-color(red, $lightness: +90%);
+  }
+
+  &.type-warning {
+    border: 2px solid yellow;
+    background-color: scale-color(yellow, $lightness: +90%);
+  }
+
+  &.type-info {
+    border: 2px solid blue;
+    background-color: scale-color(blue, $lightness: +95%);
+  }
+
+  &.type-success {
+    border: 2px solid green;
+    background-color: scale-color(green, $lightness: +90%);
+  }
+
+  .el-notification__title {
+    font-size: var(--el-font-size-base);
+  }
+
+  .el-notification__content {
+    margin-top: 0;
+    color: var(--el-text-color-secondary);
+    font-size: var(--el-font-size-extra-small);
+
+    p {
+      line-height: 1.35em;
+      font-weight: normal;
+      color: black;
+      font-size: 14px;
+      margin-top: 2px !important;
+    }
+  }
+
+  .el-notification__group {
+    margin-left: 6px;
+  }
+
+  .el-notification__closeBtn {
+    top: 12px;
+  }
+}
