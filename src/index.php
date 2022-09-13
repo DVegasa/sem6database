@@ -154,6 +154,12 @@ SQL;
 
         // Server
 
+        // t - имя таблицы
+        // a - действие ('c', 'r', 'u', 'd')
+        // v - ассоциативный массив поле => значение
+        // p - админский пароль
+        // s - сырая SQL команда
+
         $app = AppFactory::create();
 
         $app->any('/ping', function(Request $req, Response $r) {
@@ -163,18 +169,37 @@ SQL;
             ]);
         });
 
-        $app->post('/initdb', function(Request $req, Response $r) use ($pdo) {
+
+        $app->post('/initdb', function(Request $req, Response $res) use ($pdo) {
             $params = $this->getPostParams($req);
-            if ($params['p'] !== $_ENV['ADMIN_PASSWORD']) return $this->response($r, [], 403);
+            if ($params['p'] !== $_ENV['ADMIN_PASSWORD']) return $this->response($res, [], 403);
             $pdo->exec(self::SQL_INIT);
-            return $this->response($r, [], 200);
+            return $this->response($res, [], 200);
         });
 
-        $app->post('/fakedata', function(Request $req, Response $r) use ($pdo) {
+        $app->post('/fakedata', function(Request $req, Response $res) use ($pdo) {
             $params = $this->getPostParams($req);
-            if ($params['p'] !== $_ENV['ADMIN_PASSWORD']) return $this->response($r, [], 403);
+            if ($params['p'] !== $_ENV['ADMIN_PASSWORD']) return $this->response($res, [], 403);
             $pdo->exec(self::SQL_FAKE_DATA);
-            return $this->response($r, [], 200);
+            return $this->response($res, [], 200);
+        });
+
+        $app->post('/exec', function ($req, $res) use ($pdo) {
+            $params = $this->getPostParams($req);
+            if ($params['p'] !== $_ENV['ADMIN_PASSWORD']) return $this->response($res, [], 403);
+            $result = $pdo->exec($params['s']);
+            return $this->response($res, ['result' => $result], 200);
+        });
+
+        $app->post('/query', function ($req, $res) use ($pdo) {
+            $params = $this->getPostParams($req);
+            if ($params['p'] !== $_ENV['ADMIN_PASSWORD']) return $this->response($res, [], 403);
+
+            $result = [];
+            foreach ($pdo->query($params['s']) as $row) {
+                $result[] = $row;
+            }
+            return $this->response($res, ['result' => $result], 200);
         });
 
         $app->run();
