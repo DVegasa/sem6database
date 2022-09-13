@@ -251,6 +251,11 @@ SQL;
                 return $this->response($res, ['result' => $this->delete($pdo, $p['t'], $p['v']['id'])], 200);
             }
 
+            if ($p['a'] === 'c') {
+                return $this->response($res, ['result' => $this->create($pdo, $p['t'], $p['v'])], 200);
+            }
+
+
             return $this->response($res, null, 400);
         });
 
@@ -291,12 +296,27 @@ SQL;
         return $query->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function delete(PDO $pdo, $t, $id) {
+    function delete(PDO $pdo, $t, $id) {
         $sql = "DELETE FROM $t WHERE id = $id";
         $query = $pdo->prepare($sql);
         if (!$query->execute()) {
             throw new PDOException('При удалении пользователя возникла ошибка');
         }
+    }
+
+    function create(PDO $pdo, $t, $v) {
+        $fieldTable = array_keys($v);
+        $fields = implode(', ', $fieldTable);
+        foreach ($v as $key => $value) {
+            $v[$key] = htmlspecialchars($value, ENT_QUOTES);
+        }
+        $values = '\'' . implode('\', \'', $v) . '\'';
+        $sql = "INSERT INTO $t ({$fields}) VALUES ($values)";
+        $query = $pdo->prepare($sql);
+        if (!$query->execute()) {
+            throw new PDOException('При добавлении пользователя возникла ошибка');
+        }
+
     }
 
 //    public function update($id, $data)
