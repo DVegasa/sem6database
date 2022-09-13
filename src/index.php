@@ -255,6 +255,10 @@ SQL;
                 return $this->response($res, ['result' => $this->create($pdo, $p['t'], $p['v'])], 200);
             }
 
+            if ($p['a'] === 'u') {
+                return $this->response($res, ['result' => $this->update($pdo, $p['t'], $p['v'])], 200);
+            }
+
 
             return $this->response($res, null, 400);
         });
@@ -319,21 +323,20 @@ SQL;
 
     }
 
-//    public function update($id, $data)
-//    {
-//        foreach ($data as $key => $value) {
-//            $data[$key] = htmlspecialchars($value, ENT_QUOTES);
-//        }
-//
-//        foreach ($data as $column => $value) {
-//            $str[] = $column . ' = \'' . $value . '\'';
-//        }
-//        $str = implode(',', $str);
-//        $sql = "UPDATE {$this->getTableName()} SET {$str} WHERE id = {$id}";
-//        $query = Database::prepare($sql);
-//        if (!$query->execute()) {
-//            throw new PDOException('При обновлении пользователя возникла ошибка');
-//        }
-//    }
+    public function update(PDO $pdo, $t, $v) {
+        foreach ($v as $key => $value) {
+            $v[$key] = htmlspecialchars($value, ENT_QUOTES);
+        }
+        foreach ($v as $column => $value) {
+            $str[] = $column . ' = \'' . $value . '\'';
+        }
+
+        $str = implode(',', $str);
+        $sql = "UPDATE $t SET {$str} WHERE id = {$v['id']}";
+        $query = $pdo->prepare($sql);
+        if (!$query->execute()) {
+            throw new PDOException('При обновлении пользователя возникла ошибка');
+        }
+    }
 
 }
