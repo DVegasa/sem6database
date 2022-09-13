@@ -1,24 +1,49 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div class="header">
+    <router-link class="element" to="/list?t=mineral">Минералы</router-link>
+    <router-link class="element" to="/list?t=shaft">Шахты</router-link>
+    <router-link class="element" to="/list?t=supplier">Поставщики</router-link>
+    <router-link class="element" to="/list?t=report">Отчёты</router-link>
+    <router-link class="element" to="/list?t=shipment">Поставки</router-link>
+
+    <div style="flex: 1" />
+
+    <router-link class="element admin" to="/admin">Админ панель</router-link>
+  </div>
+
+  <div class="content">
+    <router-view/>
+  </div>
 </template>
 
 <style lang="scss">
 @import "@/styles";
 
-nav {
-  padding: 30px;
+head, body {
+  margin: 0;
+  padding: 0;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+.header {
+  display: flex;
+  align-content: center;
+  gap: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-bottom: 1px solid #a7a7a7;
 
-    &.router-link-exact-active {
-      color: #42b983;
+  .element {
+    padding: 8px 10px;
+    color: #000000;
+
+    &:hover {
+      background-color: #c6c6c6;
     }
   }
 }
+
+.content {
+  padding: 10px;
+}
+
 </style>

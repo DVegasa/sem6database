@@ -1,8 +1,6 @@
 <template>
   <div class="pageHome" @click="launch">
-    <pre>
-    {{store}}
-    </pre>
+    Эдуард Халтурин
   </div>
 </template>
 
