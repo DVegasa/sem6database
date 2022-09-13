@@ -20,8 +20,20 @@
                   {{form?.[column] ?? ''}}
                 </template>
               </div>
+
+              <el-select
+                  v-if="column.startsWith('id_')"
+                  v-model="form[column]"
+              >
+                <el-option
+                    v-for="option in getOptionsForId(column)"
+                    :label="option.label"
+                    :value="option.value"
+                ></el-option>
+              </el-select>
+
               <el-input-number
-                  v-else
+                  v-if="column !== 'id' && !column.startsWith('id_')"
                   v-model="form[column]"
               ></el-input-number>
             </template>
@@ -85,13 +97,22 @@ const columns = computed(() => {
 watch([columns, entity], ([cols]) => {
   if (!cols) return
   for (const col of cols) {
-    form[col] = entity.value?.[col] ?? ''
+    form[col] = entity.value?.[col] ?? null
     if (table.value[col] === 'int' || table.value[col] === 'float') {
-      form[col] = Number(form[col])
+      form[col] = Number(form[col]) ?? null
     }
   }
 }, {immediate: true})
 
+const getOptionsForId = (column) => {
+  const table = column.replace('id_', '')
+  return (store.data.value?.[table] ?? []).map(e => {
+    return {
+      value: e.id,
+      label: e.name,
+    }
+  })
+}
 
 const onSubmit = async () => {
   if (isCreateMode.value) {
